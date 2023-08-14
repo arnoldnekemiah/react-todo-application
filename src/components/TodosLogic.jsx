@@ -1,12 +1,14 @@
   import InputTodo from "./InputTodo";
   import TodosList from "./TodoList";
   import { useState } from "react";
+  import { v4 as uuidv4 } from "uuid";
+
   
   const TodosLogic = () => {
     const [todos, setTodos] = useState(
       [
         {
-          id: 1,
+          id: uuidv4(),
           title: 'Setup development environment',
           completed: true,
         },
@@ -38,16 +40,39 @@
     };
 
     const delTodo = (id) => {
-      console.log('deleted', id);
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
     };
 
+    const addTodoItem = (title) => {
+      const newTodo = {
+        id: uuidv4(),
+        title: title,
+        completed: false,
+      };
+      setTodos([...todos, newTodo]);
+    };
+
+    const setUpdate = (updatedTitle, id) => {
+      setTodos(
+        todos.map((todo) => {
+          if (todo.id === id) {
+            todo.title = updatedTitle;
+          }
+          return todo;
+        })
+      );
+    };
+    
+    
     return (
       <div>
-        <InputTodo />
+        <InputTodo addTodoItem={addTodoItem} />
         <TodosList
          todosProps={todos} 
          handleChange={handleChange}
          delTodo={delTodo}
+         setUpdate={setUpdate}
+         setTodos={setTodos} 
            />
       </div>
       
